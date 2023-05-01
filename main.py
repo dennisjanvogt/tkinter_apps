@@ -11,6 +11,9 @@ from app_overview import AppOverview
 from ivy_app.create_customer_app import CreateCustomerApp
 from ivy_app.create_order_app import CreateOrderApp
 from ivy_app.create_product_app import CreateProductApp
+from ivy_app.view_customer_app import ViewCustomersApp
+from ivy_app.view_orders_app import ViewOrdersApp
+from ivy_app.view_products_app import ViewProductsApp
 
 APPS = {
     "Adressbuch (AB)": {
@@ -21,6 +24,9 @@ APPS = {
         "ERP_CA": CreateCustomerApp,
         "ERP_PA": CreateProductApp,
         "ERP_OA": CreateOrderApp,
+        "ERP_VCA": ViewCustomersApp,
+        "ERP_VPA": ViewProductsApp,
+        "ERP_VOA": ViewOrdersApp,
     },
 }
 
