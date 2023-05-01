@@ -6,19 +6,22 @@ from tkinter import ttk, font
 from ttkthemes import ThemedTk
 from app_frame import AppFrame
 from adress_bock_app.contact_app import ContactApp
-from adress_bock_app.view_contacts_app import ViewContactsApp
+from adress_bock_app.view_contacts_app import ViewContactApp
 from app_overview import AppOverview
 from ivy_app.create_customer_app import CreateCustomerApp
 from ivy_app.create_order_app import CreateOrderApp
 from ivy_app.create_product_app import CreateProductApp
 
 APPS = {
-    "VA": AppOverview,
-    "KA": ContactApp,
-    "KS": ViewContactsApp,
-    "ERPCA": CreateCustomerApp,
-    "ERPPA": CreateProductApp,
-    "ERPOA": CreateOrderApp,
+    "Adressbuch (AB)": {
+        "AB_KA": ContactApp,
+        "AB_KS": ViewContactApp,
+    },
+    "Ivy App (ERP)": {
+        "ERP_CA": CreateCustomerApp,
+        "ERP_PA": CreateProductApp,
+        "ERP_OA": CreateOrderApp,
+    },
 }
 
 
@@ -111,8 +114,15 @@ class MainApp(ThemedTk):
 
     def reload_theme(self):
         for widget in self.winfo_children():
-            if isinstance(widget, (ttk.Widget, AppFrame)):
+            if isinstance(widget, ttk.Widget) and hasattr(widget, "update_theme"):
                 widget.update_theme()
+            if isinstance(widget, AppFrame) and isinstance(
+                widget.current_app, AppOverview
+            ):
+                theme_mode = "dark" if sv_ttk.get_theme() == "dark" else "light"
+                widget.current_app.update_category_row_bg(theme_mode)
+                if hasattr(widget.current_app, "update_theme"):
+                    widget.current_app.update_theme()
 
 
 app = MainApp()
