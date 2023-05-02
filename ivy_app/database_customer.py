@@ -1,4 +1,4 @@
-from ivy_app.database import Customer, Session
+from ivy_app.database_tables import Customer, Session
 
 
 class CustomerDatabase:
@@ -14,7 +14,7 @@ class CustomerDatabase:
         return self.session.query(Customer).all()
 
     def update_customer(self, customer_id, name=None, phone=None, email=None):
-        customer = self.session.query(Customer).get(customer_id)
+        customer: Customer = self.session.query(Customer).get(customer_id)
         if name:
             customer.name = name
         if phone:

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from ivy_app.database import Order, Session
+from ivy_app.database_tables import Order, Session
 from ivy_app.edit_order_dialog import EditOrderDialog
 
 
@@ -42,6 +42,18 @@ class ViewOrdersApp(ttk.Frame):
                 ),
             )
 
+        self.orders_tree.bind("<Double-1>", self.on_double_click)
+
+        edit_button = ttk.Button(
+            self, text="Bestellung bearbeiten", command=self.edit_order
+        )
+        edit_button.pack(side=tk.LEFT, padx=(10, 5), pady=(0, 10))
+
+        delete_button = ttk.Button(
+            self, text="Bestellung löschen", command=self.delete_order
+        )
+        delete_button.pack(side=tk.RIGHT, padx=(5, 10), pady=(0, 10))
+
     def edit_order(self):
         order_id = self.orders_tree.selection()[0]
         order = self.orders_tree.item(order_id)
@@ -64,3 +76,6 @@ class ViewOrdersApp(ttk.Frame):
             self.session.query(Order).filter(Order.id == order_id).delete()
             self.session.commit()
             self.load_orders()
+
+    def on_double_click(self, event):
+        self.edit_order()

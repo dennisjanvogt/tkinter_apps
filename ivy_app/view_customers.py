@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from ivy_app.database import Customer, Session
+from ivy_app.database_tables import Customer, Order, Session
 from ivy_app.edit_customer_dialog import EditCustomerDialog
 
 
@@ -65,7 +65,15 @@ class ViewCustomersApp(ttk.Frame):
             message="Möchten Sie diesen Kontakt wirklich löschen?",
         )
         if response:
-            self.session.query(Customer).filter(Customer.id == customer_id).delete()
+            customer = (
+                self.session.query(Customer).filter(Customer.id == customer_id).first()
+            )
+
+            self.session.query(Order).filter(Order.customer == customer).delete()
+
+            customer = (
+                self.session.query(Customer).filter(Customer.id == customer_id).delete()
+            )
             self.session.commit()
             self.load_customer()
 

@@ -1,6 +1,7 @@
-from adress_bock_app.database import Contact, Session
+from adress_book_app.database_tables import Contact, Session
 
-class AddressBook:
+
+class ContactDatabase:
     def __init__(self):
         self.session = Session()
 

@@ -1,12 +1,15 @@
 from tkinter import ttk
 import tkinter as tk
 
+from ivy_app.database_customer import CustomerDatabase
+
 
 class EditCustomerDialog(tk.Toplevel):
-    def __init__(self, customer_app, customer_id, name, phone, email):
-        super().__init__(customer_app)
+    def __init__(self, parent, customer_id, name, phone, email):
+        super().__init__(parent)
 
-        self.customer_app = customer_app
+        self.customer_db_instance = CustomerDatabase()
+
         self.customer_id = customer_id
         self.title("Kunde bearbeiten")
         self.geometry("400x200")
@@ -40,6 +43,6 @@ class EditCustomerDialog(tk.Toplevel):
         phone = self.phone_entry.get()
         email = self.email_entry.get()
 
-        self.customer_app.update_customer(self.customer_id, name, phone, email)
-        self.master.update_customer()
+        self.customer_db_instance.update_customer(self.customer_id, name, phone, email)
+        self.master.load_customer()
         self.destroy()

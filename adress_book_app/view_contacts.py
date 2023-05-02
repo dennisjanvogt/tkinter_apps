@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from adress_bock_app.address_book import AddressBook
-from adress_bock_app.edit_contact_dialog import EditContactDialog
+from adress_book_app.database_contact import ContactDatabase
+from adress_book_app.edit_contact_dialog import EditContactDialog
 
 
 class ViewContactApp(ttk.Frame):
@@ -11,7 +11,7 @@ class ViewContactApp(ttk.Frame):
     def __init__(self, parent, *args):
         super().__init__(parent)
 
-        self.address_book = AddressBook()
+        self.address_book = ContactDatabase()
 
         self.contacts_tree = ttk.Treeview(
             self, columns=("Name", "Vorname", "Telefonnummer"), show="headings"
@@ -21,6 +21,10 @@ class ViewContactApp(ttk.Frame):
         self.contacts_tree.heading("Telefonnummer", text="Telefonnummer")
         self.contacts_tree.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
         self.load_contacts()
+
+        self.contacts_tree.bind(
+            "<Double-1>", self.on_double_click
+        )  # Doppelklick-Funktion hinzufügen
 
         edit_button = ttk.Button(
             self, text="Kontakt bearbeiten", command=self.edit_contact
@@ -65,3 +69,6 @@ class ViewContactApp(ttk.Frame):
         if response:
             self.address_book.delete_contact(contact_id)
             self.contacts_tree.delete(contact_id)
+
+    def on_double_click(self, event):
+        self.edit_contact()

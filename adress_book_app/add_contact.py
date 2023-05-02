@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from adress_bock_app.address_book import AddressBook
+from adress_book_app.database_contact import ContactDatabase
+
 
 class ContactApp(ttk.Frame):
     title = "Kontakt-App"
@@ -8,7 +9,7 @@ class ContactApp(ttk.Frame):
     def __init__(self, parent, *args):
         super().__init__(parent)
 
-        self.address_book = AddressBook()
+        self.contact_db_instance = ContactDatabase()
 
         self.create_widgets()
 
@@ -29,7 +30,9 @@ class ContactApp(ttk.Frame):
         self.phone_number_label = ttk.Label(self, text="Telefonnummer:")
         self.phone_number_label.grid(row=2, column=0, padx=(10, 5), pady=10, sticky="w")
         self.phone_number_entry = ttk.Entry(self)
-        self.phone_number_entry.grid(row=2, column=1, padx=(5, 10), pady=10, sticky="ew")
+        self.phone_number_entry.grid(
+            row=2, column=1, padx=(5, 10), pady=10, sticky="ew"
+        )
 
         # Speichern-Button
         self.save_button = ttk.Button(self, text="Speichern", command=self.save_contact)
@@ -37,7 +40,9 @@ class ContactApp(ttk.Frame):
 
         # Status-Label
         self.status_label = ttk.Label(self, text="")
-        self.status_label.grid(row=4, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="w")
+        self.status_label.grid(
+            row=4, column=0, columnspan=2, padx=10, pady=(0, 10), sticky="w"
+        )
 
     def save_contact(self):
         name = self.name_entry.get()
@@ -45,7 +50,7 @@ class ContactApp(ttk.Frame):
         phone_number = self.phone_number_entry.get()
 
         if name and firstname and phone_number:
-            self.address_book.add_contact(name, firstname, phone_number)
+            self.contact_db_instance.add_contact(name, firstname, phone_number)
 
             # Leeren Sie die Eingabefelder
             self.name_entry.delete(0, tk.END)
@@ -55,4 +60,6 @@ class ContactApp(ttk.Frame):
             # Zeige, dass die Daten gespeichert wurden
             self.status_label.config(text="Kontakt gespeichert.", foreground="green")
         else:
-            self.status_label.config(text="Bitte füllen Sie alle Felder aus.", foreground="red")
+            self.status_label.config(
+                text="Bitte füllen Sie alle Felder aus.", foreground="red"
+            )

@@ -1,19 +1,20 @@
+import os
 from Levenshtein import distance
 import sv_ttk
 
 import tkinter as tk
-from tkinter import ttk, font
+from tkinter import PhotoImage, ttk, font
 from ttkthemes import ThemedTk
-from app_frame import AppFrame
-from adress_bock_app.contact_app import ContactApp
-from adress_bock_app.view_contacts_app import ViewContactApp
-from app_overview import AppOverview
-from ivy_app.create_customer_app import CreateCustomerApp
-from ivy_app.create_order_app import CreateOrderApp
-from ivy_app.create_product_app import CreateProductApp
-from ivy_app.view_customer_app import ViewCustomersApp
-from ivy_app.view_orders_app import ViewOrdersApp
-from ivy_app.view_products_app import ViewProductsApp
+from helpers.app_frame import AppFrame
+from adress_book_app.add_contact import ContactApp
+from adress_book_app.view_contacts import ViewContactApp
+from helpers.app_overview import AppOverview
+from ivy_app.add_customer import CreateCustomerApp
+from ivy_app.add_order import CreateOrderApp
+from ivy_app.add_product import CreateProductApp
+from ivy_app.view_customers import ViewCustomersApp
+from ivy_app.view_orders import ViewOrdersApp
+from ivy_app.view_products import ViewProductsApp
 
 APPS = {
     "Adressbuch (AB)": {
@@ -60,9 +61,11 @@ class MainApp(ThemedTk):
         self.app_title = ttk.Label(self.top_frame, text="", font=self.app_title_font)
         self.app_title.pack(side=tk.LEFT, padx=(0, 20), expand=True, anchor="center")
 
-        self.logo_font = font.Font(family="Helvetica", size=18, weight="bold")
-        self.logo_label = ttk.Label(self.top_frame, text="NoSAP", font=self.logo_font)
+        self.logo_image = PhotoImage(file="helpers/LOGO.png").subsample(2, 2)
+        self.logo_label = ttk.Label(self.top_frame, image=self.logo_image)
         self.logo_label.pack(side=tk.RIGHT, padx=(20, 5))
+
+        self.iconphoto(False, self.logo_image)
 
         self.separator = ttk.Separator(self, orient="horizontal")
         self.separator.pack(side=tk.TOP, fill=tk.X, pady=(5, 10))

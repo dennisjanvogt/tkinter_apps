@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from ivy_app.database import Product, Session
+from ivy_app.database_tables import Order, Product, Session
 
 from ivy_app.edit_product_dialog import EditProductDialog
 
@@ -62,6 +62,14 @@ class ViewProductsApp(ttk.Frame):
             message="Are you sure you want to delete this product?",
         )
         if response:
-            self.session.query(Product).filter(Product.id == product_id).delete()
+            customer = (
+                self.session.query(Product).filter(Product.id == product_id).first()
+            )
+
+            self.session.query(Order).filter(Order.customer == customer).delete()
+
+            customer = (
+                self.session.query(Product).filter(Product.id == product_id).delete()
+            )
             self.session.commit()
             self.load_products()
