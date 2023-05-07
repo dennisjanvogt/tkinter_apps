@@ -15,6 +15,8 @@ from ivy_app.add_product import CreateProductApp
 from ivy_app.view_customers import ViewCustomersApp
 from ivy_app.view_orders import ViewOrdersApp
 from ivy_app.view_products import ViewProductsApp
+from stopwatch_app import StopwatchApp
+
 
 APPS = {
     "Adressbuch (AB)": {
@@ -28,6 +30,9 @@ APPS = {
         "ERP_VCA": ViewCustomersApp,
         "ERP_VPA": ViewProductsApp,
         "ERP_VOA": ViewOrdersApp,
+    },
+    "Stopwatch": {
+        "SW": StopwatchApp,
     },
 }
 
