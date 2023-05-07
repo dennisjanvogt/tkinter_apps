@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from apps.stopwatch.stopwatch_database import ProjectTable
 
 
@@ -11,7 +12,7 @@ class AddStopwatchPopup(tk.Toplevel):
         self.on_save_callback = on_save_callback
 
         self.title("Stoppuhr hinzufügen")
-        self.geometry("300x200")
+        self.geometry("510x400")
 
         self.project_table = ProjectTable()
 
@@ -20,37 +21,79 @@ class AddStopwatchPopup(tk.Toplevel):
 
     def create_widgets(self):
         self.project_frame = ttk.Frame(self)
-        self.project_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=25)
+        self.project_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        self.project_label = ttk.Label(self.project_frame, text="Projekt auswählen:")
-        self.project_label.pack(pady=5, anchor="center")
+        self.filter_label = ttk.Label(self.project_frame, text="Filter:")
+        self.filter_label.grid(row=0, column=0, padx=5, pady=5, sticky="e")
 
-        self.project_combobox = ttk.Combobox(
-            self.project_frame, values=[], state="readonly"
+        self.filter_entry = ttk.Entry(self.project_frame)
+        self.filter_entry.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.filter_entry.bind("<KeyRelease>", self.on_filter_change)
+
+        self.tree = ttk.Treeview(self.project_frame)
+        self.tree["columns"] = ("#1",)
+        self.tree.heading("#0", text=" Projekt", anchor="w")
+        self.tree.column("#0", anchor="w", width=100)
+        self.tree.heading("#1", text=" Beschreibung", anchor="w")
+        self.tree.column("#1", anchor="w", width=350)
+
+        self.scrollbar = ttk.Scrollbar(
+            self.project_frame, orient="vertical", command=self.tree.yview
         )
-        self.project_combobox.pack(pady=5, anchor="center")
+        self.scrollbar.grid(row=1, column=2, padx=(0, 5), pady=5, sticky="ns")
+        self.tree.configure(yscrollcommand=self.scrollbar.set)
+
+        self.tree.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
+
+        self.tree.bind("<Double-1>", self.on_double_click)
+        self.tree.bind("<Return>", self.on_double_click)
 
         self.save_button = ttk.Button(
-            self.project_frame, text="Stoppuhr hinzufügen", command=self.save_stopwatch
+            self.project_frame,
+            text="Stoppuhr hinzufügen",
+            command=self.save_stopwatch,
         )
-        self.save_button.pack(pady=5, anchor="center")
+        self.save_button.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-        # prevent the frame from resizing based on its contents
-        self.project_frame.pack_propagate(0)
+
 
     def load_projects(self):
-        projects = self.project_table.get_all_projects()
-        project_names = [project.name for project in projects]
-        self.project_combobox["values"] = project_names
-        if project_names:
-            self.project_combobox.set(project_names[0])
+        self.projects = self.project_table.get_all_projects()
+        for project in self.projects:
+            self.tree.insert("", "end", text=project.name, values=(project.description, project.id))
+
+
+    def on_double_click(self, event=None):
+        selected_item = self.tree.selection()
+        if selected_item:
+            project_id = int(self.tree.item(selected_item[0], "values")[1])
+            self.on_save_callback(project_id)
+            self.destroy()
 
     def save_stopwatch(self):
-        selected_project_name = self.project_combobox.get()
-        if selected_project_name:
-            project = self.project_table.get_project_by_name(selected_project_name)
-            self.on_save_callback(project.id)
+        selected_item = self.tree.selection()
+        if selected_item:
+            project_id = int(self.tree.item(selected_item[0], "values")[0])
+            self.on_save_callback(project_id)
             self.destroy()
+        else:
+            messagebox.showerror("Fehler", "Bitte wählen Sie ein Projekt aus.")
+
+
+    def on_filter_change(self, event):
+        filter_value = self.filter_entry.get().lower()
+        if len(filter_value.strip()) > 0:
+            filtered_projects = [
+                project for project in self.projects if filter_value in project.name.lower()
+            ]
+        else:
+            filtered_projects = self.projects
+
+        self.tree.delete(*self.tree.get_children())
+
+        for project in filtered_projects:
+            self.tree.insert("", "end", text=project.name, values=project.description)
+
 
 
 class StopwatchWidget(ttk.Frame):
