@@ -1,94 +1,89 @@
 import time
+import tkinter as tk
 from datetime import datetime
-from apps.stopwatch.stopwatch_database import StopwatchTable, EntryTable
+from .stopwatch_database import StopwatchTable, EntryTable
 
 
 class Stopwatch:
-    def __init__(self, id, project_id, state, start_time=None, note=None):
+    def __init__(
+        self,
+        id,
+        project_id,
+        state,
+        first_start_time=None,
+        latest_start_time=None,
+        actual_time=0.0,
+        note=None,
+    ):
         self.id = id
         self.project_id = project_id
         self.state = state
-        self.start_time = start_time
-        self.paused_time = 0.0  # Setzen Sie den Standardwert für "paused_time" auf 0.0
+        self.first_start_time = first_start_time
+        self.latest_start_time = latest_start_time
+        self.actual_time = actual_time
         self.note = note
         self.stopwatchtable_instance = StopwatchTable()
 
     def toggle(self):
         if self.state == "paused":
-            if (
-                self.start_time is None
-            ):  # Wenn die Stoppuhr zum ersten Mal gestartet wird
-                self.start_time = time.time()
-                self.paused_time = self.start_time
-                self._start_timestamp = time.time()
-            else:
-                self.start_time = time.time() - (self.paused_time - self.start_time)
+            if self.first_start_time is None:
+                self.first_start_time = datetime.now()
+                self.stopwatchtable_instance.update_stopwatch(
+                    self.id, first_start_time=datetime.now()
+                )
+
+            self.latest_start_time = time.time()
             self.state = "running"
-            self.stopwatchtable_instance.update_stopwatch(self.id, state="running")
+            self.stopwatchtable_instance.update_stopwatch(
+                self.id, state="running", latest_start_time=time.time()
+            )
+            print("F")
 
         else:
-            self.paused_time = (
-                time.time()
-            )  # Aktualisieren Sie das Attribut "paused_time"
+            self.actual_time = time.time() - self.latest_start_time
             self.state = "paused"
-            self.stopwatchtable_instance.update_stopwatch(self.id, state="running")
-
-        return True
-
-    def start(self):
-        if self.state == "paused":
-            self._start_timestamp = time.time()
-            self.start_time = self.start_time or time.time()
-            self.state = "running"
-            self.stopwatchtable_instance.update_stopwatch(self.id, state="running")
-            return True
-        return False
-
-    def pause(self):
-        if self.state == "running":
-            self.state = "paused"
-            self.stopwatchtable_instance.update_stopwatch(self.id, state="paused")
-            return True
-        return False
+            self.stopwatchtable_instance.update_stopwatch(
+                self.id, state="paused", latest_start_time=None
+            )
+            print("G")
 
     def reset(self):
-        if self.state == "paused":
-            self.start_time = None
-            self._start_timestamp = None
-            return True
-        return False
+        self.actual_time = 0.0
+        self.first_start_time = None
+        self.latest_start_time = None
+        # self.state = "paused" #TODO Hier ist noch bug wenn speichern dann muss der button sich verändern, aber glaub state änderung ist auch schonmal richtig.
 
     def elapsed_time(self):
         if self.state == "running":
-            return time.time() - self._start_timestamp
+            return self.actual_time + time.time() - self.latest_start_time
         return 0
 
     def save_time(self, note=""):
-        if self.state == "paused" and self.start_time is not None:
+        if self.latest_start_time is not None:
             entry_table = EntryTable()
-            duration = time.time() - self.start_time
             entry_table.add_entry(
-                stopwatch_id=self.id,
                 project_id=self.project_id,
-                time=duration,
-                start_time=datetime.fromtimestamp(self._start_timestamp),
-                note=note or self.note,
+                time=self.get_elapsed_time_str(),
+                first_start_time=self.first_start_time,
+                note=note.get(),
             )
+            note.set("")
             self.reset()
-            return True
-        return False
 
     def remove(self):
         self.stopwatchtable_instance.delete_stopwatch(self.id)
 
     def get_elapsed_time_str(self):
         if self.state == "running":
-            elapsed_time = time.time() - self.start_time
+            if self.latest_start_time == None:
+                elapsed_time = self.actual_time
+            else:
+                elapsed_time = self.actual_time + time.time() - self.latest_start_time
         elif self.state == "paused":
-            if self.start_time is None:
+            if self.first_start_time is None:
                 elapsed_time = 0.0
             else:
-                elapsed_time = self.paused_time - self.start_time
+                elapsed_time = self.actual_time
         else:
             raise ValueError(f"Ungültiger Stoppuhrzustand: {self.state}")
 

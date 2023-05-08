@@ -21,25 +21,24 @@ class Stopwatches(Base):
 
     id = Column(Integer, primary_key=True)
     project_id = Column(Integer, ForeignKey("projekte.id"))
-    start_time = Column(DateTime, default=None, nullable=True)
+    first_start_time = Column(DateTime, default=None, nullable=True)
+    latest_start_time = Column(Float)
     state = Column(Enum("running", "paused", name="stopwatch_states"), default="paused")
+    actual_time = Column(Float)
     note = Column(String, default="", nullable=True)
 
     project = relationship("Projekte", back_populates="stopwatches")
-    entries = relationship("Entrys", back_populates="stopwatch")
 
 
 class Entrys(Base):
     __tablename__ = "eintraege"
 
     id = Column(Integer, primary_key=True)
-    stopwatch_id = Column(Integer, ForeignKey("stopwatches.id"))
     project_id = Column(Integer, ForeignKey("projekte.id"))
-    time = Column(Float)
-    start_time = Column(DateTime, nullable=True)
+    time = Column(String)
+    first_start_time = Column(DateTime, nullable=True)
     note = Column(String, default="", nullable=True)
 
-    stopwatch = relationship("Stopwatches", back_populates="entries")
     project = relationship("Projekte")
 
 

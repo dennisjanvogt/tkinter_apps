@@ -1,22 +1,23 @@
 import os
 from levenshtein_distance import Levenshtein
-
 import sv_ttk
 import tkinter as tk
 from tkinter import PhotoImage, ttk, font
 from ttkthemes import ThemedTk
 
-
 from helpers.app_frame import AppFrame
+from helpers.app_overview import AppOverview
+
 from apps.adress_book.add_contact import ContactApp
 from apps.adress_book.view_contacts import ViewContactApp
-from helpers.app_overview import AppOverview
+
 from apps.ivy_erp.add_customer import CreateCustomerApp
 from apps.ivy_erp.add_order import CreateOrderApp
 from apps.ivy_erp.add_product import CreateProductApp
 from apps.ivy_erp.view_customers import ViewCustomersApp
 from apps.ivy_erp.view_orders import ViewOrdersApp
 from apps.ivy_erp.view_products import ViewProductsApp
+
 from apps.stopwatch.stopwatch_app import StopwatchApp
 
 
@@ -108,11 +109,13 @@ class MainApp(ThemedTk):
 
     def open_app(self, event):
         app_name = self.app_entry.get().strip()
-        closest_app_name = min(APPS_NAMES.keys(), key=lambda x: Levenshtein(APPS_NAMES[x].title, app_name).distance())
+        closest_app_name = min(
+            APPS_NAMES.keys(),
+            key=lambda x: Levenshtein(APPS_NAMES[x].title, app_name).distance(),
+        )
         app_class = APPS_NAMES[closest_app_name]
         self.app_entry.delete(0, tk.END)
         self.load_app(app_class)
-
 
     def load_app(self, app_class):
         self.app_frame.clear()

@@ -1,3 +1,9 @@
+Sport
+Haushalt
+Arbeit
+Fun
+
+
 import tkinter as tk
 from tkinter import ttk
 from .stopwatch import Stopwatch

@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-from apps.stopwatch.stopwatch_database import ProjectTable
+from .stopwatch_database import ProjectTable
 
 
 class AddStopwatchPopup(tk.Toplevel):
@@ -55,13 +55,12 @@ class AddStopwatchPopup(tk.Toplevel):
         )
         self.save_button.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-
-
     def load_projects(self):
         self.projects = self.project_table.get_all_projects()
         for project in self.projects:
-            self.tree.insert("", "end", text=project.name, values=(project.description, project.id))
-
+            self.tree.insert(
+                "", "end", text=project.name, values=(project.description, project.id)
+            )
 
     def on_double_click(self, event=None):
         selected_item = self.tree.selection()
@@ -79,12 +78,13 @@ class AddStopwatchPopup(tk.Toplevel):
         else:
             messagebox.showerror("Fehler", "Bitte wählen Sie ein Projekt aus.")
 
-
     def on_filter_change(self, event):
         filter_value = self.filter_entry.get().lower()
         if len(filter_value.strip()) > 0:
             filtered_projects = [
-                project for project in self.projects if filter_value in project.name.lower()
+                project
+                for project in self.projects
+                if filter_value in project.name.lower()
             ]
         else:
             filtered_projects = self.projects
@@ -93,7 +93,6 @@ class AddStopwatchPopup(tk.Toplevel):
 
         for project in filtered_projects:
             self.tree.insert("", "end", text=project.name, values=project.description)
-
 
 
 class StopwatchWidget(ttk.Frame):

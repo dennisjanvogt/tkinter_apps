@@ -1,4 +1,4 @@
-from apps.stopwatch.database_tables import Stopwatches, Entrys, Projekte, Session
+from .database_tables import Stopwatches, Entrys, Projekte, Session
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -20,11 +20,11 @@ class StopwatchTable(StopwatchDB):
     def add_stopwatch(self, stopwatch_data):
         new_stopwatch = Stopwatches(
             project_id=stopwatch_data["project_id"],
-            start_time=stopwatch_data["start_time"],
+            first_start_time=stopwatch_data["first_start_time"],
+            latest_start_time=stopwatch_data["latest_start_time"],
             state=stopwatch_data["state"],
-            note=stopwatch_data.get(
-                "note", ""
-            ),  # Verwenden Sie die get()-Methode mit einem Standardwert
+            actual_time=stopwatch_data["actual_time"],
+            note=stopwatch_data["note"],
         )
         self.session.add(new_stopwatch)
         self.session.commit()
@@ -49,12 +49,11 @@ class StopwatchTable(StopwatchDB):
 
 
 class EntryTable(StopwatchDB):
-    def add_entry(self, stopwatch_id, project_id, time, start_time, note=""):
+    def add_entry(self, project_id, time, first_start_time, note=""):
         entry = Entrys(
-            stopwatch_id=stopwatch_id,
             project_id=project_id,
             time=time,
-            start_time=start_time,
+            first_start_time=first_start_time,
             note=note,
         )
         self.session.add(entry)
