@@ -24,11 +24,15 @@ class Stopwatch:
             else:
                 self.start_time = time.time() - (self.paused_time - self.start_time)
             self.state = "running"
+            self.stopwatchtable_instance.update_stopwatch(self.id, state="running")
+
         else:
             self.paused_time = (
                 time.time()
             )  # Aktualisieren Sie das Attribut "paused_time"
             self.state = "paused"
+            self.stopwatchtable_instance.update_stopwatch(self.id, state="running")
+
         return True
 
     def start(self):
@@ -36,12 +40,14 @@ class Stopwatch:
             self._start_timestamp = time.time()
             self.start_time = self.start_time or time.time()
             self.state = "running"
+            self.stopwatchtable_instance.update_stopwatch(self.id, state="running")
             return True
         return False
 
     def pause(self):
         if self.state == "running":
             self.state = "paused"
+            self.stopwatchtable_instance.update_stopwatch(self.id, state="paused")
             return True
         return False
 
