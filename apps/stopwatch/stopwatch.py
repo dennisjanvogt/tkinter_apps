@@ -37,21 +37,22 @@ class Stopwatch:
             self.stopwatchtable_instance.update_stopwatch(
                 self.id, state="running", latest_start_time=time.time()
             )
-            print("F")
-
         else:
             self.actual_time = time.time() - self.latest_start_time
             self.state = "paused"
             self.stopwatchtable_instance.update_stopwatch(
-                self.id, state="paused", latest_start_time=None
+                self.id, state="paused", latest_start_time=None, actual_time = self.actual_time
             )
-            print("G")
 
     def reset(self):
         self.actual_time = 0.0
         self.first_start_time = None
         self.latest_start_time = None
-        # self.state = "paused" #TODO Hier ist noch bug wenn speichern dann muss der button sich verändern, aber glaub state änderung ist auch schonmal richtig.
+        self.state = "paused"
+        self.stopwatchtable_instance.update_stopwatch(
+                self.id, state="paused", latest_start_time=None, actual_time = 0.0,
+        first_start_time = None
+            )
 
     def elapsed_time(self):
         if self.state == "running":
@@ -69,6 +70,7 @@ class Stopwatch:
             )
             note.set("")
             self.reset()
+            return True
 
     def remove(self):
         self.stopwatchtable_instance.delete_stopwatch(self.id)

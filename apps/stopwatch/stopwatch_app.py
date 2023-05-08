@@ -34,7 +34,7 @@ class StopwatchWidget(ttk.Frame):
         self.start_pause_button.grid(row=0, column=2, padx=(5, 5), pady=(5, 5))
 
         self.note_entry_var = tk.StringVar()
-        self.note_entry = ttk.Entry(self, textvariable=self.note_entry_var)
+        self.note_entry = ttk.Entry(self, textvariable=self.note_entry_var, width=40)
         self.note_entry.grid(row=0, column=3, padx=(5, 5), pady=(5, 5))
 
         self.save_button = ttk.Button(self, text="Speichern", command=self.save_time)
@@ -64,6 +64,8 @@ class StopwatchWidget(ttk.Frame):
     def save_time(self):
         if self.stopwatch.save_time(note=self.note_entry_var):
             self.stopwatch.reset()
+            self.start_pause_button.config(text="Start")
+            print("yes")
 
 
 class StopwatchApp(ttk.Frame):
