@@ -1,3 +1,5 @@
+# TODO Logging, Testing, Kacheln, Doku, Farbdesign
+
 import os
 from levenshtein_distance import Levenshtein
 import sv_ttk
@@ -19,6 +21,9 @@ from apps.ivy_erp.view_orders import ViewOrdersApp
 from apps.ivy_erp.view_products import ViewProductsApp
 
 from apps.stopwatch.stopwatch_app import StopwatchApp
+from apps.stopwatch.database_tables import Session_Stopwatch
+
+# TODO: Imports schöner gestalten
 
 
 APPS = {
@@ -123,6 +128,7 @@ class MainApp(ThemedTk):
         app_instance = app_class(self.app_frame, APPS)
         app_instance.pack(fill=tk.BOTH, expand=True)
         self.app_frame.current_app = app_instance
+        self.close_all_db_sessions()
 
     def update_app_overview(self, *args):
         filter_text = self.app_entry_var.get()
@@ -157,6 +163,9 @@ class MainApp(ThemedTk):
                 widget.current_app.update_category_row_bg(theme_mode)
                 if hasattr(widget.current_app, "update_theme"):
                     widget.current_app.update_theme()
+
+    def close_all_db_sessions(self):
+        Session_Stopwatch.close_all()
 
 
 app = MainApp()

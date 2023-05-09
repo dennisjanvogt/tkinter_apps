@@ -37,7 +37,11 @@ class StopwatchWidget(ttk.Frame):
         self.note_entry_var = tk.StringVar()
         self.note_entry_var.trace_add("write", self.update_note_in_db)
         self.note_entry_var.set(self.stopwatch.note)
-        self.note_entry = ttk.Entry(self, textvariable=self.note_entry_var, width=40, )
+        self.note_entry = ttk.Entry(
+            self,
+            textvariable=self.note_entry_var,
+            width=40,
+        )
         self.note_entry.grid(row=0, column=3, padx=(5, 5), pady=(5, 5))
 
         self.save_button = ttk.Button(self, text="Speichern", command=self.save_time)
@@ -77,6 +81,9 @@ class StopwatchWidget(ttk.Frame):
 
 
 class StopwatchApp(ttk.Frame):
+    # TODO: Raster für Aufbau
+    # TODO: Frame mit Scrollrad weil sonst overload
+
     title = "StopwatchApp"
 
     def __init__(self, parent, *args):
@@ -129,7 +136,7 @@ class StopwatchApp(ttk.Frame):
             "first_start_time": None,
             "latest_start_time": None,
             "actual_time": 0.0,
-            "note": None,
+            "note": "",
         }
         stopwatch_id = self.stopwatch_table.add_stopwatch(stopwatch_data)
         stopwatch_data["id"] = stopwatch_id

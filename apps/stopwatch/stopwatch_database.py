@@ -1,10 +1,10 @@
-from .database_tables import Stopwatches, Entrys, Projekte, Session
+from .database_tables import Stopwatches, Entrys, Projekte, Session_Stopwatch
 from sqlalchemy.orm.exc import NoResultFound
 
 
 class StopwatchDB:
     def __init__(self):
-        self.session = Session()
+        self.session = Session_Stopwatch()
 
     def commit(self):
         self.session.commit()

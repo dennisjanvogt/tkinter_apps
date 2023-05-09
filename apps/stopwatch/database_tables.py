@@ -53,8 +53,6 @@ class Projekte(Base):
 
 
 db_path = os.path.join("apps/stopwatch/databases", "stopwatch.db")
-engine = create_engine(
-    f"sqlite:///{db_path}", pool_size=10, max_overflow=20
-)  # TODO Datenbankverbindungen schließen
+engine = create_engine(f"sqlite:///{db_path}", pool_size=10, max_overflow=20)
 Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
+Session_Stopwatch = sessionmaker(bind=engine)
