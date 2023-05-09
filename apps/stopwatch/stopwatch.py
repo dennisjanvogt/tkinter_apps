@@ -38,7 +38,7 @@ class Stopwatch:
                 self.id, state="running", latest_start_time=time.time()
             )
         else:
-            self.actual_time = time.time() - self.latest_start_time
+            self.actual_time = self.actual_time + time.time() - self.latest_start_time
             self.state = "paused"
             self.stopwatchtable_instance.update_stopwatch(
                 self.id, state="paused", latest_start_time=None, actual_time = self.actual_time
