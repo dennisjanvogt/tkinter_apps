@@ -6,12 +6,13 @@ from .stopwatch_app_addentry import AddStopwatchPopup
 
 
 class StopwatchWidget(ttk.Frame):
-    def __init__(self, parent, stopwatch, on_remove_callback):
+    def __init__(self, parent, stopwatch: Stopwatch, on_remove_callback):
         super().__init__(parent, padding=10)
 
         self.stopwatch = stopwatch
         self.on_remove_callback = on_remove_callback
         self.project_table_instance = ProjectTable()
+        self.stopwatch_table_instance = StopwatchTable()
 
         self.project_label = ttk.Label(
             self,
@@ -34,7 +35,9 @@ class StopwatchWidget(ttk.Frame):
         self.start_pause_button.grid(row=0, column=2, padx=(5, 5), pady=(5, 5))
 
         self.note_entry_var = tk.StringVar()
-        self.note_entry = ttk.Entry(self, textvariable=self.note_entry_var, width=40)
+        self.note_entry_var.trace_add("write", self.update_note_in_db)
+        self.note_entry_var.set(self.stopwatch.note)
+        self.note_entry = ttk.Entry(self, textvariable=self.note_entry_var, width=40, )
         self.note_entry.grid(row=0, column=3, padx=(5, 5), pady=(5, 5))
 
         self.save_button = ttk.Button(self, text="Speichern", command=self.save_time)
@@ -66,6 +69,11 @@ class StopwatchWidget(ttk.Frame):
             self.stopwatch.reset()
             self.start_pause_button.config(text="Start")
             print("yes")
+
+    def update_note_in_db(self, *args):
+        self.stopwatch_table_instance.update_stopwatch(
+            self.stopwatch.id, note=self.note_entry_var.get()
+        )
 
 
 class StopwatchApp(ttk.Frame):
