@@ -65,7 +65,7 @@ class AddStopwatchPopup(tk.Toplevel):
     def on_double_click(self, event=None):
         selected_item = self.tree.selection()
         if selected_item:
-            project_id = int(self.tree.item(selected_item[0], "values")[1])
+            project_id = int(self.tree.item(selected_item[0], "values")[1]) #TODO Bug wenn Filter nicht mehr hinzufügbar
             self.on_save_callback(project_id)
             self.destroy()
 
