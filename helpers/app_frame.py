@@ -12,4 +12,7 @@ class AppFrame(ttk.Frame):
     def update_theme(self):
         for widget in self.winfo_children():
             if isinstance(widget, (ttk.Widget, AppFrame)):
-                widget.update_theme()
+                try:
+                    widget.update_theme()
+                except AttributeError as attribute_error:
+                    print("Update could not be updated. Reason: " + attribute_error)
