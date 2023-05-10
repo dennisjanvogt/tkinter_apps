@@ -1,6 +1,5 @@
 # TODO Logging, Testing, Kacheln, Doku, Farbdesign
 
-import os
 from levenshtein_distance import Levenshtein
 import sv_ttk
 import tkinter as tk
@@ -21,7 +20,9 @@ from apps.ivy_erp.view_orders import ViewOrdersApp
 from apps.ivy_erp.view_products import ViewProductsApp
 
 from apps.stopwatch.stopwatch_app import StopwatchApp
-from apps.stopwatch.database_tables import Session_Stopwatch
+from apps.stopwatch.stopwatch_entries import ViewEntrysApp
+
+from sqlalchemy.orm.session import close_all_sessions
 
 # TODO: Imports schöner gestalten
 
@@ -41,6 +42,7 @@ APPS = {
     },
     "Stopwatch": {
         "SW_USE": StopwatchApp,
+        "SW_VIEW": ViewEntrysApp,
     },
 }
 
@@ -53,7 +55,8 @@ APPS_NAMES = {
     "ERP_VCA": ViewCustomersApp,
     "ERP_VPA": ViewProductsApp,
     "ERP_VOA": ViewOrdersApp,
-    "SW": StopwatchApp,
+    "SW_USE": StopwatchApp,
+    "SW_VIEW": ViewEntrysApp,
 }
 
 
@@ -128,7 +131,7 @@ class MainApp(ThemedTk):
         app_instance = app_class(self.app_frame, APPS)
         app_instance.pack(fill=tk.BOTH, expand=True)
         self.app_frame.current_app = app_instance
-        self.close_all_db_sessions()
+        close_all_sessions()
 
     def update_app_overview(self, *args):
         filter_text = self.app_entry_var.get()
@@ -164,9 +167,7 @@ class MainApp(ThemedTk):
                 if hasattr(widget.current_app, "update_theme"):
                     widget.current_app.update_theme()
 
-    def close_all_db_sessions(self):
-        Session_Stopwatch.close_all()
 
-
-app = MainApp()
-app.mainloop()
+if __name__ == "__main__":
+    app = MainApp()
+    app.mainloop()

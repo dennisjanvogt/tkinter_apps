@@ -109,3 +109,6 @@ class ProjectTable(StopwatchDB):
             return self.session.query(Projekte).filter_by(name=name).one()
         except NoResultFound:
             return None
+
+    def get_project_id_by_name(self, project_name):
+        return self.session.query(Projekte).filter_by(name=project_name).one().id
