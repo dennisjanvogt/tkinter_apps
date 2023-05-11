@@ -14,7 +14,7 @@ class EditEntryDialog(tk.Toplevel):
         project_name = self.project_db_instance.get_project(id=project).name
 
         self.entry_id = entry_id
-        self.title("Eintrag bearbeiten")
+        self.title("Zeiterfassung bearbeiten")
         self.geometry("430x200")
         self.resizable(False, False)
 

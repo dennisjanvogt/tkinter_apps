@@ -40,7 +40,7 @@ APPS = {
         "ERP_VPA": ViewProductsApp,
         "ERP_VOA": ViewOrdersApp,
     },
-    "Stopwatch": {
+    "Zeiterfassung": {
         "SW_USE": StopwatchApp,
         "SW_VIEW": ViewEntrysApp,
     },

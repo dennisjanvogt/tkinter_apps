@@ -11,7 +11,7 @@ class AddStopwatchPopup(tk.Toplevel):
         self.parent = parent
         self.on_save_callback = on_save_callback
 
-        self.title("Stoppuhr hinzufügen")
+        self.title("Zeiterfassung hinzufügen")
         self.geometry("510x400")
 
         self.project_table = ProjectTable()

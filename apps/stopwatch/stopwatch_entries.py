@@ -8,7 +8,7 @@ from .edit_entry_dialog import EditEntryDialog
 
 
 class ViewEntrysApp(ttk.Frame):
-    title = "Stopwatcheintrag anzeigen"
+    title = "Zeiterfassungen anzeigen"
 
     def __init__(self, parent, *args):
         super().__init__(parent)

@@ -84,7 +84,7 @@ class StopwatchApp(ttk.Frame):
     # TODO: Raster für Aufbau
     # TODO: Frame mit Scrollrad weil sonst overload
 
-    title = "StopwatchApp"
+    title = "Zeiterfassung"
 
     def __init__(self, parent, *args):
         super().__init__(parent)
